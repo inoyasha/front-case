@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拓扑图demo</title>
+    <!--    <script src="../js/go.js"></script>-->
+    <script src="../js/go-debug.js"></script>
+    <style>
+        a {
+            height: 30px;
+            line-height: 30px;
+            padding: 5px;
+            text-decoration: none;
+            color: #666666;
+            margin-left: 30px;
+        }
+
+        a:hover {
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+<a href="https://www.bbsmax.com/A/E35pM8lAdv/" target="_blank">中文文档说明</a>
+<a href="https://gojs.net/latest/intro/permissions.html" target="_blank">gojs官方文档</a>
+<!-- The DIV for a Diagram needs an explicit size or else we will not see anything.
+     In this case we also add a background color so we can see that area. -->
+<div id="templateDiagramDiv"
+     style="width:400px; height:150px; background-color: #DAE4E4;"></div>
+
+<script type="text/javascript">
+    var $ = go.GraphObject.make;
+    var templateDiagram =
+        $(go.Diagram, "templateDiagramDiv");
+    // the node template describes how each Node should be constructed
+    templateDiagram.nodeTemplate =
+        $(go.Node, "Auto",  // the Shape automatically fits around the TextBlock
+            $(go.Shape, "RoundedRectangle",  // use this kind of figure for the Shape
+                // bind Shape.fill to Node.data.color
+                new go.Binding("fill", "color")),
+            $(go.TextBlock,
+                {margin: 3},  // some room around the text
+                // bind TextBlock.text to Node.data.key
+                new go.Binding("text", "key"))
+        );
+
+    templateDiagram.linkTemplate =
+        $(go.Link,
+            $(go.Shape,
+                new go.Binding("stroke", "color"),  // shape.stroke = data.color
+                new go.Binding("strokeWidth", "thick")),  // shape.strokeWidth = data.thick
+            $(go.Shape,
+                {toArrow: "OpenTriangle", fill: null},
+                new go.Binding("stroke", "color"),  // shape.stroke = data.color
+                new go.Binding("strokeWidth", "thick"))  // shape.strokeWidth = data.thick
+        );
+
+    // the Model holds only the essential information describing the diagram
+    templateDiagram.model = new go.GraphLinksModel(
+        [ // a JavaScript Array of JavaScript objects, one per node;
+            // the "color" property is added specifically for this app
+            {key: "Alpha", color: "lightblue"},
+            {key: "Beta", color: "orange"},
+            {key: "Gamma", color: "lightgreen"},
+            {key: "Delta", color: "pink"}
+        ],
+        [ // a JavaScript Array of JavaScript objects, one per link
+            {from: "Alpha", to: "Beta", color: 'blue', thick: 1.5},
+            {from: "Alpha", to: "Gamma"},
+            {from: "Beta", to: "Delta"},
+            {from: "Delta", to: "Beta"}
+        ]);
+    // enable Ctrl-Z to undo and Ctrl-Y to redo
+    // templateDiagram.undoManager.isEnabled = true;
+    templateDiagram.isEnabled = false;
+</script>
+</body>
+</html>
